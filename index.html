@@ -1845,39 +1845,61 @@ function downloadCSV() {
     ];
 
 
-    const rows =
-        results.map(
-            function(row) {
+// =====================================================
+// CSV出力用データ
+// 曲番号順に並べ替える
+// =====================================================
 
-                return [
+const rows =
+    [...results]
+        .sort(function(a, b) {
 
-                    row.participantId,
+            // song01, song02, ... の番号を取得
+            const numA =
+                parseInt(
+                    a.stimulusId.replace("song", ""),
+                    10
+                );
 
-                    row.trial,
+            const numB =
+                parseInt(
+                    b.stimulusId.replace("song", ""),
+                    10
+                );
 
-                    row.stimulusId,
+            return numA - numB;
 
-                    row.stimulusTitle,
+        })
+        .map(function(row) {
 
-                    row.stimulusFile,
+            return [
 
-                    row.reactionTimeMs,
+                row.participantId,
 
-                    row.nostalgia,
+                row.trial,
 
-                    row.pastExperience,
+                row.stimulusId,
 
-                    row.eraAtmosphere,
+                row.stimulusTitle,
 
-                    row.liking,
+                row.stimulusFile,
 
-                    row.heardBefore
+                row.reactionTimeMs,
 
-                ];
+                row.nostalgia,
 
-            }
-        );
+                row.pastExperience,
 
+                row.eraAtmosphere,
+
+                row.liking,
+
+                // はい = 1、いいえ = 0
+                row.heardBefore === "はい" ? 1 : 0
+
+            ];
+
+        });
 
     /*
        CSV用エスケープ
