@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>音楽と懐かしさに関する実験</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        "Yu Gothic",
+        "Meiryo",
+        sans-serif;
+
+    background: #f5f6f8;
+    color: #222;
+    line-height: 1.7;
+}
+
+.container {
+    width: min(900px, calc(100% - 32px));
+    margin: 40px auto;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 28px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 22px;
+    margin-top: 0;
+}
+
+.center {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+input[type="text"] {
+    width: 100%;
+    max-width: 500px;
+    padding: 14px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px 0 20px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 13px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+.start-button {
+    font-size: 18px;
+    padding: 16px 35px;
+}
+
+.instruction {
+    background: #f1f5f9;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.progress {
+    text-align: right;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.music-area {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.music-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.space-message {
+    margin-top: 35px;
+    padding: 25px;
+    background: #eff6ff;
+    border: 2px solid #2563eb;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.recorded-message {
+    background: #dcfce7;
+    border: 2px solid #16a34a;
+    color: #166534;
+}
+
+.reaction-time {
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+.question {
+    margin: 28px 0;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #ddd;
+}
+
+.question-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.option {
+    flex: 1;
+    min-width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+}
+
+.option:hover {
+    background: #f0f6ff;
+}
+
+.option input {
+    margin-right: 7px;
+}
+
+.required {
+    color: #dc2626;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.error {
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.download-area {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.small {
+    font-size: 14px;
+    color: #666;
+}
+
+.status {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+
+    .card {
+        padding: 24px 18px;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    .options {
+        flex-direction: column;
+    }
+
+    .option {
+        min-width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- ==================================================
+     参加者画面
+================================================== -->
+
+<section id="participantScreen" class="card">
+
+    <h1>
+        音楽と懐かしさに関する実験
+    </h1>
+
+    <div class="instruction">
+
+        <p>
+            これから音楽を聴いていただきます。
+        </p>
+
+        <p>
+            音楽を聴いている途中で
+            <strong>懐かしさを感じた瞬間にSpaceキーを1回押してください。</strong>
+        </p>
+
+        <p>
+            Spaceキーを押した後も、音楽はそのまま最後まで流れます。
+        </p>
+
+        <p>
+            音楽終了後、その音楽について5つの質問に回答していただきます。
+        </p>
+
+    </div>
+
+
+    <div class="center">
+
+        <label for="participantId">
+            参加者名を入力してください
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            id="participantId"
+            placeholder="例：鈴木一郎"
+            autocomplete="off"
+        >
+
+        <br>
+
+        <button
+            class="start-button"
+            onclick="startExperiment()"
+        >
+            実験を開始する
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     音楽画面
+================================================== -->
+
+<section id="musicScreen" class="card hidden">
+
+    <div class="progress">
+        <span id="progressText"></span>
+    </div>
+
+
+    <h2 class="center">
+        音楽を聴いてください
+    </h2>
+
+
+    <div class="music-area">
+
+
+        <!--
+            ★ audio controls は付けません。
+            これによってSpaceキーで
+            プレイヤーが一時停止する問題を防ぎます。
+        -->
+
+        <audio
+            id="audioPlayer"
+            preload="auto"
+        ></audio>
+
+
+        <button
+            id="playButton"
+            class="start-button"
+            onclick="startMusic()"
+        >
+            ▶ 音楽を再生する
+        </button>
+
+        <button
+            id="emergencyStopButton"
+            onclick="emergencyStop()"
+            style="
+                margin-top: 25px;
+                background: #dc2626;
+                font-size: 14px;
+                padding: 10px 18px;
+                "
+            >
+            ■ 緊急停止
+        </button>
+
+
+        <div
+            id="waitingMessage"
+            class="space-message"
+        >
+
+            <p>
+                「音楽を再生する」を押してください。
+            </p>
+
+            <p class="small">
+                再生が始まったら、懐かしさを感じた瞬間に
+                <strong>Spaceキー</strong>を押してください。
+            </p>
+
+        </div>
+
+
+        <div
+            id="spaceMessage"
+            class="space-message hidden"
+        >
+
+            <p>
+                音楽を聴いていて
+                <strong>懐かしさを感じた瞬間にSpaceキーを押してください。</strong>
+            </p>
+
+            <p class="small">
+                ※ Spaceキーを押しても音楽は止まりません。
+            </p>
+
+        </div>
+
+
+        <div
+            id="recordedMessage"
+            class="space-message recorded-message hidden"
+        >
+
+            懐かしさを感じた時点を記録しました。
+
+            <div
+                id="reactionTimeText"
+                class="reaction-time"
+            ></div>
+
+            <p class="small">
+                音楽はそのまま最後まで流れます。
+            </p>
+
+        </div>
+
+
+        <div
+            id="statusMessage"
+            class="status"
+        ></div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     質問画面
+================================================== -->
+
+<section
+    id="questionScreen"
+    class="card hidden"
+>
+
+    <div class="progress">
+        <span id="questionProgress"></span>
+    </div>
+
+
+    <h2>
+        音楽について回答してください
+    </h2>
+
+
+    <p class="small">
+        すべての質問に回答してください。
+    </p>
+
+
+
+    <!-- Q1 -->
+
+    <div class="question">
+
+        <div class="question-title">
+
+            1. この音楽にどの程度、懐かしさを感じましたか？
+
+            <span class="required">
+                必須
+            </span>
+
+        </div>
+
+
+        <div class="options">
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="nostalgia"
+                    value="1"
+                >
+                1<br>
+                まったく感じない
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="nostalgia"
+                    value="2"
+                >
+                2
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="nostalgia"
+                    value="3"
+                >
+                3
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="nostalgia"
+                    value="4"
+                >
+                4
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="nostalgia"
+                    value="5"
+                >
+                5<br>
+                とても感じる
+            </label>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Q2 -->
+
+    <div class="question">
+
+        <div class="question-title">
+
+            2. 過去の経験がどれくらい想起されましたか？
+
+            <span class="required">
+                必須
+            </span>
+
+        </div>
+
+
+        <div class="options">
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="experience"
+                    value="1"
+                >
+                1<br>
+                まったく想起されない
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="experience"
+                    value="2"
+                >
+                2
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="experience"
+                    value="3"
+                >
+                3
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="experience"
+                    value="4"
+                >
+                4
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="experience"
+                    value="5"
+                >
+                5<br>
+                非常によく想起される
+            </label>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Q3 -->
+
+    <div class="question">
+
+        <div class="question-title">
+
+            3. 過去の時代の雰囲気をどれだけ想起しましたか？
+
+            <span class="required">
+                必須
+            </span>
+
+        </div>
+
+
+        <div class="options">
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="era"
+                    value="1"
+                >
+                1<br>
+                まったく想起しない
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="era"
+                    value="2"
+                >
+                2
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="era"
+                    value="3"
+                >
+                3
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="era"
+                    value="4"
+                >
+                4
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="era"
+                    value="5"
+                >
+                5<br>
+                非常によく想起する
+            </label>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Q4 -->
+
+    <div class="question">
+
+        <div class="question-title">
+
+            4. この曲が好きですか？
+
+            <span class="required">
+                必須
+            </span>
+
+        </div>
+
+
+        <div class="options">
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="liking"
+                    value="1"
+                >
+                1<br>
+                まったく好きではない
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="liking"
+                    value="2"
+                >
+                2
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="liking"
+                    value="3"
+                >
+                3
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="liking"
+                    value="4"
+                >
+                4
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="liking"
+                    value="5"
+                >
+                5<br>
+                とても好き
+            </label>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Q5 -->
+
+    <div class="question">
+
+        <div class="question-title">
+
+            5. この曲を以前聴いたことがありますか？
+
+            <span class="required">
+                必須
+            </span>
+
+        </div>
+
+
+        <div class="options">
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="heardBefore"
+                    value="はい"
+                >
+                はい
+            </label>
+
+            <label class="option">
+                <input
+                    type="radio"
+                    name="heardBefore"
+                    value="いいえ"
+                >
+                いいえ
+            </label>
+
+        </div>
+
+    </div>
+
+
+
+    <div
+        id="answerError"
+        class="error hidden"
+    >
+        すべての項目に回答してください。
+    </div>
+
+
+    <div class="center">
+
+        <button onclick="submitAnswers()">
+            回答を確定して次へ
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     終了画面
+================================================== -->
+
+<section
+    id="finishScreen"
+    class="card hidden"
+>
+
+    <h1>
+        実験終了
+    </h1>
+
+
+    <p class="center">
+        すべての音楽について回答しました。
+    </p>
+
+
+    <div class="download-area">
+
+        <p>
+            実験結果をCSVファイルとして
+            ダウンロードしてください。
+        </p>
+
+        <button onclick="downloadCSV()">
+            CSVをダウンロード
+        </button>
+
+    </div>
+
+</section>
+
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   実験刺激
+===================================================== */
+
+/*
+    ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    
+    ここに45曲を登録します。
+
+    今は分かりやすいように
+
+    song01.mp3
+    song02.mp3
+    ...
+    song45.mp3
+
+    という名前にしています。
+
+    audioフォルダの中に同じ名前で
+    MP3を入れてください。
+
+    ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+*/
+
+
+const stimuli = [
+
+    {
+        id: "song01",
+        title: "音楽1",
+        file: "audio/A01_春一番.mp3"
+    },
+
+    {
+        id: "song02",
+        title: "音楽2",
+        file: "audio/A02_プレイバック Part2.mp3"
+    },
+
+    {
+        id: "song03",
+        title: "音楽3",
+        file: "audio/A03_ランナウェイ.mp3"
+    },
+
+    /*{
+        id: "song04",
+        title: "音楽4",
+        file: "audio/A04_ルビーの指輪.mp3"
+    },
+
+    {
+        id: "song05",
+        title: "音楽5",
+        file: "audio/A05_春なのに.mp3"
+    },
+
+    {
+        id: "song06",
+        title: "音楽6",
+        file: "audio/A06_北ウイング.mp3"
+    },
+
+    {
+        id: "song07",
+        title: "音楽7",
+        file: "audio/A07_Romanticが止まらない.mp3"
+    },
+
+    {
+        id: "song08",
+        title: "音楽8",
+        file: "audio/A08_君は1000%.mp3"
+    },
+
+    {
+        id: "song09",
+        title: "音楽9",
+        file: "audio/A09_MARIONETTE.mp3"
+    },
+
+    {
+        id: "song10",
+        title: "音楽10",
+        file: "audio/A10_MUGO・ん…色っぽい.mp3"
+    },
+
+    {
+        id: "song11",
+        title: "音楽11",
+        file: "audio/B01_BE MY BABY.mp3"
+    },
+
+    {
+        id: "song12",
+        title: "音楽12",
+        file: "audio/B02_あなたに会えてよかった.mp3"
+    },
+
+    {
+        id: "song13",
+        title: "音楽13",
+        file: "audio/B03_サヨナラ.mp3"
+    },
+
+    {
+        id: "song14",
+        title: "音楽14",
+        file: "audio/B04_揺れる想い.mp3"
+    },
+
+    {
+        id: "song15",
+        title: "音楽15",
+        file: "audio/B05_innocent world.mp3"
+    },
+
+    {
+        id: "song16",
+        title: "音楽16",
+        file: "audio/B06_LOVE LOVE LOVE.mp3"
+    },
+
+    {
+        id: "song17",
+        title: "音楽17",
+        file: "audio/B07_LA・LA・LA LOVE SONG.mp3"
+    },
+
+    {
+        id: "song18",
+        title: "音楽18",
+        file: "audio/B08_CAN YOU CELEBRATE.mp3"
+    },
+
+    {
+        id: "song19",
+        title: "音楽19",
+        file: "audio/B09_誘惑.mp3"
+    },
+
+    {
+        id: "song20",
+        title: "音楽20",
+        file: "audio/B10_Pieces.mp3"
+    },
+
+    {
+        id: "song21",
+        title: "音楽21",
+        file: "audio/C01_Everything.mp3"
+    },
+
+    {
+        id: "song22",
+        title: "音楽22",
+        file: "audio/C02_ワダツミの木.mp3"
+    },
+
+    {
+        id: "song23",
+        title: "音楽23",
+        file: "audio/C03_月のしずく.mp3"
+    },
+
+    {
+        id: "song24",
+        title: "音楽24",
+        file: "audio/C04_瞳をとじて.mp3"
+    },
+
+    {
+        id: "song25",
+        title: "音楽25",
+        file: "audio/C05_GLAMOURS SKY.mp3"
+    },
+
+    {
+        id: "song26",
+        title: "音楽26",
+        file: "audio/C06_タイヨウのうた.mp3"
+    },
+
+    {
+        id: "song27",
+        title: "音楽27",
+        file: "audio/C07_蕾.mp3"
+    },
+
+    {
+        id: "song28",
+        title: "音楽28",
+        file: "audio/C08_LIFE.mp3"
+    },
+
+    {
+        id: "song29",
+        title: "音楽29",
+        file: "audio/C09_Believe.mp3"
+    },
+
+    {
+        id: "song30",
+        title: "音楽30",
+        file: "audio/C10_VICTORY.mp3"
+    },
+
+    {
+        id: "song31",
+        title: "音楽31",
+        file: "audio/D01_福笑い.mp3"
+    },
+
+    {
+        id: "song32",
+        title: "音楽32",
+        file: "audio/audio/D02_Shine.mp3.mp3"
+    },
+
+    {
+        id: "song33",
+        title: "音楽33",
+        file: "audio/D03_恋する季節.mp3"
+    },
+
+    {
+        id: "song34",
+        title: "音楽34",
+        file: "audio/D04_Darling.mp3"
+    },
+
+    {
+        id: "song35",
+        title: "音楽35",
+        file: "audio/D05_あなたに恋をしてみました.mp3"
+    },
+
+    {
+        id: "song36",
+        title: "音楽36",
+        file: "audio/D06_サイレントマジョリティー.mp3"
+    },
+
+    {
+        id: "song37",
+        title: "音楽37",
+        file: "audio/D07_Family Song.mp3"
+    },
+
+    {
+        id: "song38",
+        title: "音楽38",
+        file: "audio/D08_シンデレラガール.mp3"
+    },
+
+    {
+        id: "song39",
+        title: "音楽39",
+        file: "audio/D09_ハルノヒ.mp3"
+    },
+
+    {
+        id: "song40",
+        title: "音楽40",
+        file: "audio/E01_炎.mp3"
+    },
+
+    {
+        id: "song41",
+        title: "音楽41",
+        file: "audio/E02_水平線.mp3"
+    },
+
+    {
+        id: "song42",
+        title: "音楽42",
+        file: "audio/E03_Subtitle.mp3"
+    },
+
+    {
+        id: "song43",
+        title: "音楽43",
+        file: "audio/E04_晩餐歌.mp3"
+    },
+
+    {
+        id: "song44",
+        title: "音楽44",
+        file: "audio/E05_かわいいだけじゃだめですか？.mp3"
+    },
+
+    {
+        id: "song45",
+        title: "音楽45",
+        file: "audio/E06_ダーリン.mp3"
+    }*/
+
+];
+
+
+/* =====================================================
+   実験変数
+===================================================== */
+
+let participantId = "";
+
+let randomizedStimuli = [];
+
+let currentIndex = 0;
+
+let currentStimulus = null;
+
+let audioStartTime = null;
+
+let reactionTime = null;
+
+let spacePressed = false;
+
+let results = [];
+
+
+/* =====================================================
+   画面切り替え
+===================================================== */
+
+function showScreen(screenId) {
+
+    const screens = [
+        "participantScreen",
+        "musicScreen",
+        "questionScreen",
+        "finishScreen"
+    ];
+
+    screens.forEach(function(id) {
+
+        document
+            .getElementById(id)
+            .classList.add("hidden");
+
+    });
+
+    document
+        .getElementById(screenId)
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   シャッフル
+===================================================== */
+
+function shuffle(array) {
+
+    const copy = [...array];
+
+    for (
+        let i = copy.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [
+            copy[i],
+            copy[j]
+        ] = [
+            copy[j],
+            copy[i]
+        ];
+    }
+
+    return copy;
+}
+
+
+/* =====================================================
+   実験開始
+===================================================== */
+
+function startExperiment() {
+
+    const input =
+        document.getElementById("participantId");
+
+    participantId =
+        input.value.trim();
+
+    if (!participantId) {
+
+        alert(
+            "参加者名を入力してください。"
+        );
+
+        input.focus();
+
+        return;
+    }
+
+
+    randomizedStimuli =
+        shuffle(stimuli);
+
+    currentIndex = 0;
+
+    results = [];
+
+    startTrial();
+}
+
+
+/* =====================================================
+   試行開始
+===================================================== */
+
+function startTrial() {
+
+    currentStimulus =
+        randomizedStimuli[currentIndex];
+
+
+    spacePressed = false;
+
+    reactionTime = null;
+
+    audioStartTime = null;
+
+
+    const audio =
+        document.getElementById(
+            "audioPlayer"
+        );
+
+
+    /*
+       前の曲を停止
+    */
+
+    audio.pause();
+
+    audio.currentTime = 0;
+
+    audio.src =
+        currentStimulus.file;
+
+    audio.load();
+
+
+
+    /*
+       進行状況
+    */
+
+    document
+        .getElementById("progressText")
+        .textContent =
+        `${currentIndex + 1} / ${randomizedStimuli.length}`;
+
+
+    /*
+       表示リセット
+    */
+
+    document
+        .getElementById("waitingMessage")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("spaceMessage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("recordedMessage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("playButton")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("statusMessage")
+        .textContent = "";
+
+
+    /*
+       音楽画面
+    */
+
+    showScreen("musicScreen");
+}
+
+
+/* =====================================================
+   音楽再生開始
+===================================================== */
+
+function startMusic() {
+
+    const audio =
+        document.getElementById(
+            "audioPlayer"
+        );
+
+
+    /*
+       再生開始
+    */
+
+    const playPromise =
+        audio.play();
+
+
+    /*
+       play() が成功したら計測開始
+    */
+
+    if (playPromise !== undefined) {
+
+        playPromise
+            .then(function() {
+
+                /*
+                   再生開始時刻
+                */
+
+                audioStartTime =
+                    performance.now();
+
+
+                /*
+                   再生ボタンを隠す
+                */
+
+                document
+                    .getElementById(
+                        "playButton"
+                    )
+                    .classList.add(
+                        "hidden"
+                    );
+
+
+                /*
+                   待機メッセージを隠す
+                */
+
+                document
+                    .getElementById(
+                        "waitingMessage"
+                    )
+                    .classList.add(
+                        "hidden"
+                    );
+
+
+                /*
+                   Space案内を表示
+                */
+
+                document
+                    .getElementById(
+                        "spaceMessage"
+                    )
+                    .classList.remove(
+                        "hidden"
+                    );
+
+            })
+            .catch(function(error) {
+
+                console.error(error);
+
+                alert(
+                    "音楽を再生できませんでした。もう一度お試しください。"
+                );
+
+            });
+
+    }
+}
+
+function emergencyStop() {
+
+    const audio =
+        document.getElementById("audioPlayer");
+
+    if (!audio.paused) {
+
+        audio.pause();
+
+        document.getElementById(
+            "statusMessage"
+        ).textContent =
+            "音楽を緊急停止しました。";
+
+    }
+
+}
+
+
+/* =====================================================
+   Spaceキー
+===================================================== */
+
+/*
+   capture = true にしています。
+
+   これにより、Spaceキーが
+   audio要素に届く前に処理します。
+
+   また audio controls 自体を付けていないため、
+   Spaceキーで音楽が一時停止することはありません。
+*/
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        /*
+           音楽画面以外
+        */
+
+        const musicScreen =
+            document.getElementById(
+                "musicScreen"
+            );
+
+        if (
+            musicScreen.classList.contains(
+                "hidden"
+            )
+        ) {
+
+            return;
+        }
+
+
+        /*
+           Space以外
+        */
+
+        if (
+            event.code !== "Space"
+        ) {
+
+            return;
+        }
+
+
+        /*
+           Spaceによる
+           スクロール等を防止
+        */
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        /*
+           音楽開始前
+        */
+
+        if (
+            audioStartTime === null
+        ) {
+
+            return;
+        }
+
+
+        /*
+           すでに記録済み
+        */
+
+        if (spacePressed) {
+
+            return;
+        }
+
+
+        const audio =
+            document.getElementById(
+                "audioPlayer"
+            );
+
+
+        /*
+           音楽が再生中か確認
+        */
+
+        if (audio.paused) {
+
+            return;
+        }
+
+
+        /*
+           Space記録
+        */
+
+        spacePressed = true;
+
+
+        /*
+           再生開始からSpaceまで
+        */
+
+        reactionTime =
+            performance.now()
+            -
+            audioStartTime;
+
+
+        /*
+           小数点以下2桁
+        */
+
+        reactionTime =
+            Math.round(
+                reactionTime * 100
+            ) / 100;
+
+
+        /*
+           表示変更
+        */
+
+        document
+            .getElementById(
+                "spaceMessage"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "recordedMessage"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "reactionTimeText"
+            )
+            .textContent =
+            `懐かしさを感じた時間：${reactionTime} ms`;
+
+
+        /*
+           ★★★★★★★★★★★★★★★★★★★
+           
+           ここでは audio.pause() を
+           絶対に実行しません。
+           
+           曲はそのまま再生されます。
+           
+           ★★★★★★★★★★★★★★★★★★★
+        */
+
+    },
+    true
+);
+
+
+/* =====================================================
+   曲終了
+===================================================== */
+
+document
+    .getElementById("audioPlayer")
+    .addEventListener(
+        "ended",
+        function() {
+
+            /*
+               曲が終わったら評定へ
+            */
+
+            showQuestionScreen();
+
+        }
+    );
+
+
+/* =====================================================
+   質問画面
+===================================================== */
+
+function showQuestionScreen() {
+
+    document
+        .getElementById(
+            "questionProgress"
+        )
+        .textContent =
+        `${currentIndex + 1} / ${randomizedStimuli.length}`;
+
+
+    /*
+       回答をリセット
+    */
+
+    document
+        .querySelectorAll(
+            '#questionScreen input[type="radio"]'
+        )
+        .forEach(function(input) {
+
+            input.checked = false;
+
+        });
+
+
+    document
+        .getElementById(
+            "answerError"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+
+    showScreen(
+        "questionScreen"
+    );
+}
+
+
+/* =====================================================
+   回答取得
+===================================================== */
+
+function getSelected(name) {
+
+    const selected =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+    if (selected) {
+
+        return selected.value;
+
+    }
+
+    return null;
+}
+
+
+/* =====================================================
+   回答確定
+===================================================== */
+
+function submitAnswers() {
+
+    const nostalgia =
+        getSelected("nostalgia");
+
+    const experience =
+        getSelected("experience");
+
+    const era =
+        getSelected("era");
+
+    const liking =
+        getSelected("liking");
+
+    const heardBefore =
+        getSelected("heardBefore");
+
+
+    /*
+       すべて必須
+    */
+
+    if (
+        !nostalgia ||
+        !experience ||
+        !era ||
+        !liking ||
+        !heardBefore
+    ) {
+
+        document
+            .getElementById(
+                "answerError"
+            )
+            .classList.remove(
+                "hidden"
+            );
+
+        return;
+    }
+
+
+    /*
+       結果を保存
+    */
+
+    results.push({
+
+        participantId:
+            participantId,
+
+        trial:
+            currentIndex + 1,
+
+        stimulusId:
+            currentStimulus.id,
+
+        stimulusTitle:
+            currentStimulus.title,
+
+        stimulusFile:
+            currentStimulus.file,
+
+        reactionTimeMs:
+            reactionTime,
+
+        nostalgia:
+            nostalgia,
+
+        pastExperience:
+            experience,
+
+        eraAtmosphere:
+            era,
+
+        liking:
+            liking,
+
+        heardBefore:
+            heardBefore
+
+    });
+
+
+    /*
+       次の曲
+    */
+
+    currentIndex++;
+
+
+    if (
+        currentIndex <
+        randomizedStimuli.length
+    ) {
+
+        startTrial();
+
+    } else {
+
+        showFinishScreen();
+
+    }
+}
+
+
+/* =====================================================
+   終了
+===================================================== */
+
+function showFinishScreen() {
+
+    showScreen(
+        "finishScreen"
+    );
+}
+
+
+/* =====================================================
+   CSVダウンロード
+===================================================== */
+
+function downloadCSV() {
+
+    if (
+        results.length === 0
+    ) {
+
+        alert(
+            "データがありません。"
+        );
+
+        return;
+    }
+
+
+    const headers = [
+
+        "participant_id",
+
+        "trial",
+
+        "stimulus_id",
+
+        "stimulus_title",
+
+        "stimulus_file",
+
+        "reaction_time_ms",
+
+        "nostalgia_1to5",
+
+        "past_experience_1to5",
+
+        "era_atmosphere_1to5",
+
+        "liking_1to5",
+
+        "heard_before"
+
+    ];
+
+
+    const rows =
+        results.map(
+            function(row) {
+
+                return [
+
+                    row.participantId,
+
+                    row.trial,
+
+                    row.stimulusId,
+
+                    row.stimulusTitle,
+
+                    row.stimulusFile,
+
+                    row.reactionTimeMs,
+
+                    row.nostalgia,
+
+                    row.pastExperience,
+
+                    row.eraAtmosphere,
+
+                    row.liking,
+
+                    row.heardBefore
+
+                ];
+
+            }
+        );
+
+
+    /*
+       CSV用エスケープ
+    */
+
+    function escapeCSV(value) {
+
+        const text =
+            String(
+                value ?? ""
+            );
+
+        return '"' +
+            text.replace(
+                /"/g,
+                '""'
+            ) +
+            '"';
+    }
+
+
+    const csv = [
+
+        headers
+            .map(escapeCSV)
+            .join(","),
+
+        ...rows.map(
+            function(row) {
+
+                return row
+                    .map(escapeCSV)
+                    .join(",");
+
+            }
+        )
+
+    ].join("\r\n");
+
+
+    /*
+       UTF-8 BOM
+    */
+
+    const blob =
+        new Blob(
+            [
+                "\uFEFF" + csv
+            ],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href = url;
+
+
+    link.download =
+        `experiment_${participantId}_${new Date().toISOString().slice(0,10)}.csv`;
+
+
+    document
+        .body
+        .appendChild(link);
+
+
+    link.click();
+
+
+    document
+        .body
+        .removeChild(link);
+
+
+    URL.revokeObjectURL(url);
+}
+
+</script>
+
+</body>
+</html>
