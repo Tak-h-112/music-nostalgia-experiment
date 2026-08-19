@@ -347,6 +347,24 @@ button:disabled {
             ■ 緊急停止
         </button>
 
+        <button
+            type="button"
+            id="retryButton"
+            class="hidden"
+            style="
+                position: relative;
+                z-index: 1000;
+                margin-top: 15px;
+                background: #f59e0b;
+                color: white;
+                font-size: 16px;
+                padding: 12px 20px;
+                cursor: pointer;
+            "
+            onclick="retryTrial();"
+        >
+            ↻ この試行をやり直す
+        </button>
 
         <div
             id="waitingMessage"
@@ -1305,6 +1323,10 @@ function startTrial() {
     document
         .getElementById("statusMessage")
         .textContent = "";
+    
+    document
+        .getElementById("retryButton")
+        .classList.add("hidden");
 
 
     /*
@@ -1408,7 +1430,6 @@ function emergencyStop() {
 
     const audio =
         document.getElementById("audioPlayer");
-
     if (!audio.paused) {
 
         audio.pause();
@@ -1416,10 +1437,55 @@ function emergencyStop() {
         document.getElementById(
             "statusMessage"
         ).textContent =
-            "音楽を緊急停止しました。";
+            "音楽を停止しました。";
+
+        document
+            .getElementById("retryButton")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("playButton")
+            .classList.add("hidden");
 
     }
 
+}
+
+function retryTrial() {
+
+    const audio =
+        document.getElementById("audioPlayer");
+
+    audio.pause();
+    audio.currentTime = 0;
+
+    audioStartTime = null;
+    reactionTime = null;
+    spacePressed = false;
+
+    document
+        .getElementById("retryButton")
+        .classList.add("hidden");
+    
+     document
+        .getElementById("statusMessage")
+        .textContent = "";
+
+    document
+        .getElementById("recordedMessage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("spaceMessage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("waitingMessage")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("playButton")
+        .classList.remove("hidden");
 }
 
 
