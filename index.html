@@ -1417,6 +1417,7 @@ const stimuli = [
 ===================================================== */
 
 let participantId = "";
+let consentName = "";
 
 let randomizedStimuli = [];
 
@@ -1535,7 +1536,7 @@ function startExperiment() {
        同意者氏名を取得
     */
 
-    const consentName =
+    consentName =
         document
             .getElementById("consentName")
             .value
@@ -2540,21 +2541,27 @@ function downloadCSV() {
 
     const csv = [
 
-        headers
-            .map(escapeCSV)
-            .join(","),
+    ["同意者氏名", consentName]
+        .map(escapeCSV)
+        .join(","),
 
-        ...rows.map(
-            function(row) {
+    "",
 
-                return row
-                    .map(escapeCSV)
-                    .join(",");
+    headers
+        .map(escapeCSV)
+        .join(","),
 
-            }
-        )
+    ...rows.map(
+        function(row) {
 
-    ].join("\r\n");
+            return row
+                .map(escapeCSV)
+                .join(",");
+
+        }
+    )
+
+].join("\r\n");
 
 
     /*
